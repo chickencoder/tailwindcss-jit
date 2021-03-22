@@ -141,14 +141,22 @@ function parseRules(rule, cache, options = {}) {
 
 function* resolveMatchedPlugins(classCandidate, context) {
   if (context.candidateRuleMap.has(classCandidate)) {
-    yield [context.candidateRuleMap.get(classCandidate), 'DEFAULT']
+    yield [context.candidateRuleMap.get(classCandidate), 'DEFAULT', { important: false }]
   }
 
   let candidatePrefix = classCandidate
   let negative = false
+  let important = false
 
-  const twConfigPrefix = context.tailwindConfig.prefix || ''
-  const twConfigPrefixLen = twConfigPrefix.length
+  let twConfigPrefix = context.tailwindConfig.prefix || ''
+  let twConfigPrefixLen = twConfigPrefix.length
+
+  if (candidatePrefix[twConfigPrefixLen] === '!') {
+    negative = true
+    candidatePrefix = twConfigPrefix + candidatePrefix.slice(twConfigPrefixLen + 1)
+    twConfigPrefixLen++
+  }
+
   if (candidatePrefix[twConfigPrefixLen] === '-') {
     negative = true
     candidatePrefix = twConfigPrefix + candidatePrefix.slice(twConfigPrefixLen + 1)
@@ -156,7 +164,11 @@ function* resolveMatchedPlugins(classCandidate, context) {
 
   for (let [prefix, modifier] of candidatePermutations(candidatePrefix)) {
     if (context.candidateRuleMap.has(prefix)) {
-      yield [context.candidateRuleMap.get(prefix), negative ? `-${modifier}` : modifier]
+      yield [
+        context.candidateRuleMap.get(prefix),
+        negative ? `-${modifier}` : modifier,
+        { important },
+      ]
       return
     }
   }
@@ -189,7 +201,7 @@ function* resolveMatches(candidate, context) {
     }
 
     let matches = []
-    let [plugins, modifier] = matchedPlugins
+    let [plugins, modifier, { important }] = matchedPlugins
 
     for (let [sort, plugin] of plugins) {
       if (typeof plugin === 'function') {

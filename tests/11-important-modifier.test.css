@@ -1,0 +1,28 @@
+* {
+  --tw-shadow: 0 0 #0000;
+  --tw-ring-inset: var(--tw-empty, /*!*/ /*!*/);
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+}
+.font-medium {
+  font-weight: 500;
+}
+.\!font-bold {
+  font-weight: 700 !important;
+}
+.hover\:\!text-center {
+  text-align: center !important;
+}
+@media (min-width: 1024px) {
+  .lg\:\!opacity-50 {
+    opacity: 0.5 !important;
+  }
+}
+@media (min-width: 1280px) {
+  .xl\:focus\:disabled\:\!float-right:focus:disabled {
+    float: right !important;
+  }
+}
